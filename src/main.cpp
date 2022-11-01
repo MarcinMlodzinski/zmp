@@ -6,13 +6,12 @@
 
 using namespace std;
 
-
 int main()
 {
-  void *pLibHnd_Move = dlopen("libInterp4Move.so",RTLD_LAZY);
-  void *pLibHnd_Rotate = dlopen("libInterp4Rotate.so",RTLD_LAZY);
-  void *pLibHnd_Set = dlopen("libInterp4Set.so",RTLD_LAZY);
-  void *pLibHnd_Pause = dlopen("libInterp4Pause.so",RTLD_LAZY);
+  void *pLibHnd_Move = dlopen("libInterp4Move.so", RTLD_LAZY);
+  void *pLibHnd_Rotate = dlopen("libInterp4Rotate.so", RTLD_LAZY);
+  void *pLibHnd_Set = dlopen("libInterp4Set.so", RTLD_LAZY);
+  void *pLibHnd_Pause = dlopen("libInterp4Pause.so", RTLD_LAZY);
   Interp4Command *(*pCreateCmd_Move)(void);
   Interp4Command *(*pCreateCmd_Rotate)(void);
   Interp4Command *(*pCreateCmd_Set)(void);
@@ -22,48 +21,55 @@ int main()
   void *pSet;
   void *pPause;
 
-  if (!pLibHnd_Move) {
+  if (!pLibHnd_Move)
+  {
     cerr << "!!! Brak biblioteki: Interp4Move.so" << endl;
   }
-  if (!pLibHnd_Rotate){
-    cerr << "!!! Brak biblioteki: Interp4Rotate.so" <<endl;
+  if (!pLibHnd_Rotate)
+  {
+    cerr << "!!! Brak biblioteki: Interp4Rotate.so" << endl;
   }
-  if (!pLibHnd_Set){
-    cerr << "!!! Brak biblioteki: Interp4Set.so"<<endl;
+  if (!pLibHnd_Set)
+  {
+    cerr << "!!! Brak biblioteki: Interp4Set.so" << endl;
   }
-  if (!pLibHnd_Pause){
-    cerr << "!!! Brak biblioteki: Interp4Pause.so"<<endl;
+  if (!pLibHnd_Pause)
+  {
+    cerr << "!!! Brak biblioteki: Interp4Pause.so" << endl;
   }
-  if (!pLibHnd_Move || !pLibHnd_Rotate || !pLibHnd_Set || !pLibHnd_Pause){
+  if (!pLibHnd_Move || !pLibHnd_Rotate || !pLibHnd_Set || !pLibHnd_Pause)
+  {
     return 1;
   }
 
-
-  pMove = dlsym(pLibHnd_Move,"CreateCmd");
+  pMove = dlsym(pLibHnd_Move, "CreateCmd");
   pRotate = dlsym(pLibHnd_Rotate, "CreateCmd");
   pSet = dlsym(pLibHnd_Set, "CreateCmd");
   pPause = dlsym(pLibHnd_Pause, "CreateCmd");
-  if (!pMove) {
+  if (!pMove)
+  {
     cerr << "!!! Nie znaleziono funkcji CreateCmd" << endl;
   }
-  if (!pRotate) {
+  if (!pRotate)
+  {
     cerr << "!!! Nie znaleziono funkcji CreateCmd" << endl;
   }
-  if (!pSet) {
+  if (!pSet)
+  {
     cerr << "!!! Nie znaleziono funkcji CreateCmd" << endl;
   }
-  if (!pPause) {
+  if (!pPause)
+  {
     cerr << "!!! Nie znaleziono funkcji CreateCmd" << endl;
   }
-  if (!pMove || !pRotate || !pSet || !pPause){
+  if (!pMove || !pRotate || !pSet || !pPause)
+  {
     return 1;
   }
-  pCreateCmd_Move = *reinterpret_cast<Interp4Command* (**)(void)>(&pMove);
-  pCreateCmd_Rotate = *reinterpret_cast<Interp4Command* (**)(void)>(&pRotate);
-  pCreateCmd_Set = *reinterpret_cast<Interp4Command* (**)(void)>(&pSet);
-  pCreateCmd_Pause = *reinterpret_cast<Interp4Command* (**)(void)>(&pPause);
-  
-
+  pCreateCmd_Move = *reinterpret_cast<Interp4Command *(**)(void)>(&pMove);
+  pCreateCmd_Rotate = *reinterpret_cast<Interp4Command *(**)(void)>(&pRotate);
+  pCreateCmd_Set = *reinterpret_cast<Interp4Command *(**)(void)>(&pSet);
+  pCreateCmd_Pause = *reinterpret_cast<Interp4Command *(**)(void)>(&pPause);
 
   Interp4Command *pCmdMove = pCreateCmd_Move();
   Interp4Command *pCmdRotate = pCreateCmd_Rotate();
@@ -101,7 +107,7 @@ int main()
   cout << endl;
   pCmdPause->PrintCmd();
   cout << endl;
-  
+
   delete pCmdMove;
   delete pCmdRotate;
   delete pCmdSet;

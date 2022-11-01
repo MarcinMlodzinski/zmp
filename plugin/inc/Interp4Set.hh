@@ -1,8 +1,8 @@
 #pragma once
 
 #ifndef __GNUG__
-# pragma interface
-# pragma implementation
+#pragma interface
+#pragma implementation
 #endif
 
 #include "Interp4Command.hh"
@@ -19,22 +19,23 @@
  *
  *  Klasa modeluje ...
  */
-class Interp4Set: public Interp4Command {
+class Interp4Set : public Interp4Command
+{
   /*
    *  Tu należy zdefiniować pola, które są niezbędne
    *  do przechowywania wartości parametrów danego polecenia.
    *  Ponieżej zdefiniowane jest tylko jedno pole jako przykład.
    */
   std::string _Object_name;
-  double  _X;
+  double _X;
   double _Y;
   double _Angle_deg;
 
- public:
+public:
   /*!
    * \brief
    */
-  Interp4Set();  
+  Interp4Set();
   /*!
    * \brief Wyświetla postać bieżącego polecenia (nazwę oraz wartości parametrów)
    */
@@ -46,15 +47,15 @@ class Interp4Set: public Interp4Command {
   /*!
    * \brief Wyświetla nazwę polecenia
    */
-  virtual const char* GetCmdName() const;
+  virtual const char *GetCmdName() const;
   /*!
    * \brief Wykonuje polecenie oraz wizualizuje jego realizację
    */
-  virtual bool ExecCmd( MobileObj  *pMobObj, int Socket) const;
+  virtual bool ExecCmd(MobileObj *pMobObj, int Socket) const;
   /*!
    * \brief Czyta wartości parametrów danego polecenia
    */
-  virtual bool ReadParams(std::istream& Strm_CmdsList);
+  virtual bool ReadParams(std::istream &Strm_CmdsList);
   /*!
    * \brief Wyświetla wartości wczytanych parametrów
    */
@@ -64,5 +65,5 @@ class Interp4Set: public Interp4Command {
    *
    *  Ta metoda nie musi być zdefiniowna w klasie bazowej.
    */
-  static Interp4Command* CreateCmd();
- };
+  static Interp4Command *CreateCmd();
+};
