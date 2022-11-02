@@ -4,6 +4,7 @@
 #include "Interp4Command.hh"
 #include "MobileObj.hh"
 #include "LibInterface.hh"
+#include "Reader.hh"
 
 // using namespace std;
 
@@ -17,6 +18,13 @@ int main()
   set->init("libs/libInterp4Set.so");
   pause->init("libs/libInterp4Pause.so");
   rotate->init("libs/libInterp4Rotate.so");
+
+  Reader preprocRead;
+  std::istringstream aaa;
+  preprocRead.init("opis_dzialan.cmd");
+  preprocRead.execPreprocesor(aaa);
+  std::cout << aaa.str();
+
   delete move;
   delete set;
   delete pause;

@@ -1,15 +1,17 @@
-#include <cstdio>
-#include <sstream>
-#include <string>
-#include <iostream>
-#define LINE_SIZE 500
+#include "Reader.hh"
 
-bool ExecPreprocesor(const char *NazwaPliku, std::istringstream &IStrm4Cmds)
+bool Reader::init(std::string cmdFile)
+{
+    cmdFileName = cmdFile;
+    return 0;
+}
+
+bool Reader::execPreprocesor(std::istringstream &IStrm4Cmds)
 {
     std::string Cmd4Preproc = "cpp -P ";
     char Line[LINE_SIZE];
     std::ostringstream OTmpStrm;
-    Cmd4Preproc += NazwaPliku;
+    Cmd4Preproc += cmdFileName;
     FILE *pProc = popen(Cmd4Preproc.c_str(), "r");
 
     if (!pProc)
@@ -24,9 +26,9 @@ bool ExecPreprocesor(const char *NazwaPliku, std::istringstream &IStrm4Cmds)
     return pclose(pProc) == 0;
 }
 
-int main()
-{
-    std::istringstream aaa;
-    ExecPreprocesor("src/main.cpp", aaa);
-    std::cout << aaa.str();
-}
+// int main()
+// {
+//     std::istringstream aaa;
+//     ExecPreprocesor("opis_dzialan.cmd", aaa);
+//     std::cout << aaa.str();
+// }
