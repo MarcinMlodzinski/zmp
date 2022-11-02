@@ -63,10 +63,24 @@ bool Interp4Rotate::ExecCmd(MobileObj *pMobObj, int Socket) const
  */
 bool Interp4Rotate::ReadParams(std::istream &Strm_CmdsList)
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
-  return true;
+  if (!(Strm_CmdsList >> _Object_name))
+  {
+    std::cout << "Blad wczytywania nazwy obiektu" << std::endl;
+    return 1;
+  }
+
+  if (!(Strm_CmdsList >> _Angular_speed_degs))
+  {
+    std::cout << "Blad wczytywania predkosci katowej obiektu" << std::endl;
+    return 1;
+  }
+
+  if (!(Strm_CmdsList >> _Angle_deg))
+  {
+    std::cout << "Blad wczytywania kata" << std::endl;
+    return 1;
+  }
+  return 0;
 }
 
 /*!

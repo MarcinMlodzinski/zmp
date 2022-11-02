@@ -63,10 +63,12 @@ bool Interp4Pause::ExecCmd(MobileObj *pMobObj, int Socket) const
  */
 bool Interp4Pause::ReadParams(std::istream &Strm_CmdsList)
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
-  return true;
+  if (!(Strm_CmdsList >> _Pause_time_ms))
+  {
+    std::cout << "Blad wczytywania czasu" << std::endl;
+    return 1;
+  }
+  return 0;
 }
 
 /*!

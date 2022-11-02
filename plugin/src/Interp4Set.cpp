@@ -63,10 +63,30 @@ bool Interp4Set::ExecCmd(MobileObj *pMobObj, int Socket) const
  */
 bool Interp4Set::ReadParams(std::istream &Strm_CmdsList)
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
-  return true;
+  if (!(Strm_CmdsList >> _Object_name))
+  {
+    std::cout << "Blad wczytywania nazwy obiektu" << std::endl;
+    return 1;
+  }
+
+  if (!(Strm_CmdsList >> _X))
+  {
+    std::cout << "Blad wczytywania wspolrzednej x" << std::endl;
+    return 1;
+  }
+
+  if (!(Strm_CmdsList >> _Y))
+  {
+    std::cout << "Blad wczytywania wspolrzednej y" << std::endl;
+    return 1;
+  }
+
+  if (!(Strm_CmdsList >> _Angle_deg))
+  {
+    std::cout << "Blad wczytywania kata" << std::endl;
+    return 1;
+  }
+  return 0;
 }
 
 /*!
