@@ -39,3 +39,8 @@ bool LibInterface::init(std::string libraryName)
     _CmdName = getCmdName();
     return 0;
 }
+
+Interp4Command *LibInterface::CreateCmd()
+{
+    return _pCreateCmd();
+}

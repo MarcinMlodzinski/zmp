@@ -15,4 +15,5 @@ private:
 public:
     ~LibInterface();
     bool init(std::string libraryName);
+    Interp4Command *CreateCmd();
 };

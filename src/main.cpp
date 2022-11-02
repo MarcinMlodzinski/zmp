@@ -1,6 +1,7 @@
 #include <iostream>
 #include <dlfcn.h>
 #include <cassert>
+#include <map>
 #include "Interp4Command.hh"
 #include "MobileObj.hh"
 #include "LibInterface.hh"
@@ -14,16 +15,38 @@ int main()
   LibInterface *set = new LibInterface();
   LibInterface *pause = new LibInterface();
   LibInterface *rotate = new LibInterface();
+  LibInterface *handle = NULL;
+  Interp4Command *command = NULL;
   move->init("libs/libInterp4Move.so");
   set->init("libs/libInterp4Set.so");
   pause->init("libs/libInterp4Pause.so");
   rotate->init("libs/libInterp4Rotate.so");
 
+  std::map<std::string, LibInterface *> libraries{{"Move", move}, {"Set", set}, {"Pause", pause}, {"Rotate", rotate}};
+
   Reader preprocRead;
-  std::istringstream aaa;
+  std::istringstream stream;
+  std::string key;
   preprocRead.init("opis_dzialan.cmd");
-  preprocRead.execPreprocesor(aaa);
-  std::cout << aaa.str();
+  preprocRead.execPreprocesor(stream);
+  // std::cout << stream.str();
+
+  while (stream >> key)
+  {
+    std::map<std::string, LibInterface *>::iterator iterator = libraries.find(key);
+    if (iterator == libraries.end())
+    {
+      std::cout << "Nie znaleziono wtyczki dla polecenia: " << key << std::endl;
+      return 1;
+    }
+
+    handle = iterator->second;
+    command = handle->CreateCmd();
+    command->ReadParams(stream);
+    std::cout << "Polecenie:" << std::endl;
+    command->PrintCmd();
+    delete command;
+  }
 
   delete move;
   delete set;
