@@ -1,4 +1,4 @@
-__start__: obj __lines_for_space__ obj/LibInterface.o obj/Reader.o obj/Set4LibInterfaces.o interp __plugin__
+__start__: obj __lines_for_space__ obj/LibInterface.o obj/xmlinterp.o obj/Reader.o obj/Set4LibInterfaces.o interp __plugin__
 	export LD_LIBRARY_PATH="./libs"; ./interp
 
 obj:
@@ -23,7 +23,7 @@ LDFLAGS=-Wall
 
 
 interp: obj/main.o
-	g++ ${LDFLAGS} -o interp  obj/main.o obj/LibInterface.o obj/Reader.o obj/Set4LibInterfaces.o -ldl
+	g++ ${LDFLAGS} -o interp  obj/main.o obj/LibInterface.o obj/Reader.o obj/Set4LibInterfaces.o obj/xmlinterp.o -ldl -lxerces-c
 
 obj/main.o: src/main.cpp inc/Interp4Command.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
@@ -31,8 +31,11 @@ obj/main.o: src/main.cpp inc/Interp4Command.hh
 obj/Set4LibInterfaces.o: src/Set4LibInterfaces.cpp inc/Set4LibInterfaces.hh inc/Interp4Command.hh inc/LibInterface.hh
 	g++ -c ${CPPFLAGS} -o obj/Set4LibInterfaces.o src/Set4LibInterfaces.cpp
 
-obj/Reader.o: src/Reader.cpp inc/Reader.hh
+obj/Reader.o: src/Reader.cpp inc/Reader.hh inc/xmlinterp.hh inc/Configuration.hh
 	g++ -c ${CPPFLAGS} -o obj/Reader.o src/Reader.cpp
+
+obj/xmlinterp.o: src/xmlinterp.cpp inc/xmlinterp.hh inc/Configuration.hh
+	g++ -c ${CPPFLAGS} -o obj/xmlinterp.o src/xmlinterp.cpp
 
 obj/LibInterface.o: src/LibInterface.cpp inc/LibInterface.hh inc/Interp4Command.hh
 	g++ -c ${CPPFLAGS} -o obj/LibInterface.o src/LibInterface.cpp

@@ -9,6 +9,7 @@
 
 int main()
 {
+  Configuration   Config;
   Reader preprocRead;
   Set4LibInterfaces handler;
   std::istringstream stream;
@@ -17,6 +18,10 @@ int main()
 
   handler.init();
   handler.execute(stream);
+
+  if (!preprocRead.ReadFile("config/config.xml",Config)){
+    return 1;
+  }
 
   return 0;
 }
