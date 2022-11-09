@@ -2,10 +2,10 @@
 
 bool Set4LibInterfaces::init()
 {
-    LibInterface *move = new LibInterface();
-    LibInterface *set = new LibInterface();
-    LibInterface *pause = new LibInterface();
-    LibInterface *rotate = new LibInterface();
+    std::shared_ptr<LibInterface> move = std::make_shared<LibInterface>();
+    std::shared_ptr<LibInterface> set = std::make_shared<LibInterface>();
+    std::shared_ptr<LibInterface> pause = std::make_shared<LibInterface>();
+    std::shared_ptr<LibInterface> rotate = std::make_shared<LibInterface>();
 
     move->init("libs/libInterp4Move.so");
     set->init("libs/libInterp4Set.so");
@@ -23,12 +23,12 @@ bool Set4LibInterfaces::init()
 bool Set4LibInterfaces::execute(std::istringstream &stream)
 {
     std::string key;
-    LibInterface *handle;
+    std::shared_ptr<LibInterface> handle;
     Interp4Command *command;
 
     while (stream >> key)
     {
-        std::map<std::string, LibInterface *>::iterator iterator = libraries.find(key);
+        std::map<std::string, std::shared_ptr<LibInterface>>::iterator iterator = libraries.find(key);
         if (iterator == libraries.end())
         {
             std::cout << "Nie znaleziono wtyczki dla polecenia: " << key << std::endl;
