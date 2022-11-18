@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <map>
 #include <iostream>
 #include <sstream>
@@ -14,6 +15,6 @@ private:
     std::map<std::string, std::shared_ptr<LibInterface>> libraries;
 
 public:
-    bool init();
+    bool init(std::vector<std::string> libraries_vector);
     bool execute(std::istringstream &stream);
 };

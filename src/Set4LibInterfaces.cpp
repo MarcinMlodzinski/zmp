@@ -1,21 +1,31 @@
 #include "Set4LibInterfaces.hh"
 
-bool Set4LibInterfaces::init()
+bool Set4LibInterfaces::init(std::vector<std::string> libraries_vector)
 {
-    std::shared_ptr<LibInterface> move = std::make_shared<LibInterface>();
-    std::shared_ptr<LibInterface> set = std::make_shared<LibInterface>();
-    std::shared_ptr<LibInterface> pause = std::make_shared<LibInterface>();
-    std::shared_ptr<LibInterface> rotate = std::make_shared<LibInterface>();
+    for (int i = 0; i < libraries_vector.size(); i++)
+    {
+        std::shared_ptr<LibInterface> tmp_library = std::make_shared<LibInterface>();
+        tmp_library->init("libs/" + libraries_vector[i]);
+        std::string command_name = libraries_vector[i].substr(10, libraries_vector[i].length() - 13);
+        std::cout << command_name << std::endl;
 
-    move->init("libs/libInterp4Move.so");
-    set->init("libs/libInterp4Set.so");
-    pause->init("libs/libInterp4Pause.so");
-    rotate->init("libs/libInterp4Rotate.so");
+        libraries.insert(std::make_pair(command_name, tmp_library));
+    }
 
-    libraries.insert(std::make_pair("Move", move));
-    libraries.insert(std::make_pair("Set", set));
-    libraries.insert(std::make_pair("Pause", pause));
-    libraries.insert(std::make_pair("Rotate", rotate));
+    // std::shared_ptr<LibInterface> move = std::make_shared<LibInterface>();
+    // std::shared_ptr<LibInterface> set = std::make_shared<LibInterface>();
+    // std::shared_ptr<LibInterface> pause = std::make_shared<LibInterface>();
+    // std::shared_ptr<LibInterface> rotate = std::make_shared<LibInterface>();
+
+    // move->init("libs/libInterp4Move.so");
+    // set->init("libs/libInterp4Set.so");
+    // pause->init("libs/libInterp4Pause.so");
+    // rotate->init("libs/libInterp4Rotate.so");
+
+    // libraries.insert(std::make_pair("Move", move));
+    // libraries.insert(std::make_pair("Set", set));
+    // libraries.insert(std::make_pair("Pause", pause));
+    // libraries.insert(std::make_pair("Rotate", rotate));
 
     return 0;
 }

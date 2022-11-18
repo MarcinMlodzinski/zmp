@@ -9,19 +9,20 @@
 
 int main()
 {
-  Configuration   Config;
-  Reader preprocRead;
+  Configuration Config;
+  Reader reader;
   Set4LibInterfaces handler;
   std::istringstream stream;
-  preprocRead.init("opis_dzialan.cmd");
-  preprocRead.execPreprocesor(stream);
+  reader.init("opis_dzialan.cmd");
+  reader.execPreprocesor(stream);
 
-  handler.init();
-  handler.execute(stream);
-
-  if (!preprocRead.ReadFile("config/config.xml",Config)){
+  if (!reader.ReadFile("config/config.xml", Config))
+  {
     return 1;
   }
+
+  handler.init(Config.getLibraries());
+  handler.execute(stream);
 
   return 0;
 }
