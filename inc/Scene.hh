@@ -18,4 +18,5 @@ public:
     Scene(Configuration &config);
     MobileObj *FindMobileObj(const char *sName);
     void AddMobileObj(MobileObj *pMobObj);
+    std::map<std::string, MobileObj> getMobileObjects() { return _Container4Objects; }
 };
