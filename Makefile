@@ -1,4 +1,4 @@
-__start__: obj __lines_for_space__ obj/LibInterface.o obj/xmlinterp.o obj/Reader.o obj/Set4LibInterfaces.o interp __plugin__
+__start__: obj __lines_for_space__ obj/Scene.o obj/LibInterface.o obj/xmlinterp.o obj/Reader.o obj/Set4LibInterfaces.o interp __plugin__
 	export LD_LIBRARY_PATH="./libs"; ./interp
 
 obj:
@@ -23,7 +23,7 @@ LDFLAGS=-Wall
 
 
 interp: obj/main.o
-	g++ ${LDFLAGS} -o interp  obj/main.o obj/LibInterface.o obj/Reader.o obj/Set4LibInterfaces.o obj/xmlinterp.o -ldl -lxerces-c
+	g++ ${LDFLAGS} -o interp  obj/main.o obj/Scene.o obj/LibInterface.o obj/Reader.o obj/Set4LibInterfaces.o obj/xmlinterp.o -ldl -lxerces-c
 
 obj/main.o: src/main.cpp inc/Interp4Command.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
@@ -39,6 +39,9 @@ obj/xmlinterp.o: src/xmlinterp.cpp inc/xmlinterp.hh inc/Configuration.hh
 
 obj/LibInterface.o: src/LibInterface.cpp inc/LibInterface.hh inc/Interp4Command.hh
 	g++ -c ${CPPFLAGS} -o obj/LibInterface.o src/LibInterface.cpp
+
+obj/Scene.o: src/Scene.cpp inc/Scene.hh inc/MobileObj.hh inc/AccessControl.hh inc/Configuration.hh
+	g++ -c ${CPPFLAGS} -o obj/Scene.o src/Scene.cpp
 
 clean:
 	rm -f obj/* interp core*

@@ -6,6 +6,7 @@
 #include "LibInterface.hh"
 #include "Reader.hh"
 #include "Set4LibInterfaces.hh"
+#include "Scene.hh"
 
 int main()
 {
@@ -20,6 +21,8 @@ int main()
   {
     return 1;
   }
+
+  Scene scene(Config);
 
   handler.init(Config.getLibraries());
   handler.execute(stream);
