@@ -73,7 +73,11 @@ void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes &rAttrs)
  */
 void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs)
 {
-  if (rAttrs.getLength() < 1)
+  int attributes_number = rAttrs.getLength();
+  // char *sValue_Name, *sValue_Shift, *sValue_Scale, *sValue_RotXYZ_deg, *sValue_Trans_m, *sValue_RGB;
+  std::vector<std::vector<std::string>> sValue(6, std::vector<std::string>(2, ""));
+
+  if (attributes_number < 1)
   {
     cerr << "Zla ilosc atrybutow dla \"Cube\"" << endl;
     exit(1);
@@ -84,23 +88,65 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs)
    *  Sprawdzamy, czy na pewno jest to Name i Value.
    */
 
-  char *sName_Name = xercesc::XMLString::transcode(rAttrs.getQName(0));
-  char *sName_Scale = xercesc::XMLString::transcode(rAttrs.getQName(1));
-  char *sName_RGB = xercesc::XMLString::transcode(rAttrs.getQName(2));
+  for (int i = 0; i < attributes_number; i++)
+  {
+    std::string attribute = xercesc::XMLString::transcode(rAttrs.getQName(i));
+    if (attribute == "Name")
+    {
+      sValue[0][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
+      sValue[0][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
+    }
+    else if (attribute == "Shift")
+    {
 
-  XMLSize_t Index = 0;
-  char *sValue_Name = xercesc::XMLString::transcode(rAttrs.getValue(Index));
-  char *sValue_Scale = xercesc::XMLString::transcode(rAttrs.getValue(1));
-  char *sValue_RGB = xercesc::XMLString::transcode(rAttrs.getValue(2));
+      sValue[1][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
+      sValue[1][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
+    }
+    else if (attribute == "Scale")
+    {
+      sValue[2][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
+      sValue[2][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
+    }
+    else if (attribute == "RotXYZ_deg")
+    {
+      sValue[3][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
+      sValue[3][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
+    }
+    else if (attribute == "Trans_m")
+    {
+      sValue[4][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
+      sValue[4][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
+    }
+    else if (attribute == "RGB")
+    {
+      sValue[5][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
+      sValue[5][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
+    }
+  }
+
+  // char *sName_Name = xercesc::XMLString::transcode(rAttrs.getQName(0));
+  // char *sName_Scale = xercesc::XMLString::transcode(rAttrs.getQName(1));
+  // char *sName_RGB = xercesc::XMLString::transcode(rAttrs.getQName(2));
+
+  // XMLSize_t Index = 0;
+  // char *sValue_Name = xercesc::XMLString::transcode(rAttrs.getValue(Index));
+  // char *sValue_Scale = xercesc::XMLString::transcode(rAttrs.getValue(1));
+  // char *sValue_RGB = xercesc::XMLString::transcode(rAttrs.getValue(2));
 
   //-----------------------------------------------------------------------------
   // Wyświetlenie nazw atrybutów i ich "wartości"
   //
-  cout << " Atrybuty:" << endl
-       << "     " << sName_Name << " = \"" << sValue_Name << "\"" << endl
-       << "     " << sName_Scale << " = \"" << sValue_Scale << "\"" << endl
-       << "     " << sName_RGB << " = \"" << sValue_RGB << "\"" << endl
-       << endl;
+  cout << " Atrybuty:" << endl;
+  //  << "     " << sName_Name << " = \"" << sValue_Name << "\"" << endl
+  //  << "     " << sName_Scale << " = \"" << sValue_Scale << "\"" << endl
+  //  << "     " << sName_RGB << " = \"" << sValue_RGB << "\"" << endl
+  //  << endl;
+
+  for (int i = 0; i < 6; i++)
+  {
+    cout << "     " << sValue[i][0] << " = \"" << sValue[i][1] << "\"" << endl;
+  }
+
   //-----------------------------------------------------------------------------
   // Przykład czytania wartości parametrów
   // Ten przykład jest zrobiony "na piechotę" wykorzystując osobne zmienne.
@@ -114,30 +160,88 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs)
   //
   // IStrm >> Scale;
   //
+  // this->config.addName(sValue_Name);
   istringstream IStrm;
+  Vector3D tmp;
 
-  IStrm.str(sValue_Scale);
-  double Sx, Sy, Sz;
+  // IStrm.str(sValue_Scale);
+  // double Sx, Sy, Sz;
 
-  IStrm >> Sx >> Sy >> Sz;
-  if (IStrm.fail())
+  this->config.addName(sValue[0][1]);
+
+  for (int i = 1; i < 6; i++)
   {
-    cerr << " Blad!!!" << endl;
-  }
-  else
-  {
+    IStrm.str(sValue[i][1]);
+    IStrm >> tmp[0] >> tmp[1] >> tmp[2];
+    switch (i)
+    {
+    case 1:
+
+      this->config.addShift(tmp);
+      break;
+    case 2:
+
+      this->config.addScale(tmp);
+      break;
+    case 3:
+
+      this->config.addRot(tmp);
+      break;
+    case 4:
+
+      this->config.addTrans(tmp);
+      break;
+    case 5:
+
+      this->config.addRgb(tmp);
+      break;
+
+    default:
+      break;
+    }
     cout << " Czytanie wartosci OK!!!" << endl;
-    cout << "     " << Sx << "  " << Sy << "  " << Sz << endl;
+    if (i > 0)
+    {
+      cout << sValue[i][0] << "     " << tmp[0] << "  " << tmp[1] << "  " << tmp[2] << endl;
+    }
+    IStrm.clear();
   }
+
+  // IStrm >> Sx >> Sy >> Sz;
+  // IStrm >> tmp[0] >> tmp[1] >> tmp[2];
+  // if (IStrm.fail())
+  // {
+  //   cerr << " Blad!!!" << endl;
+  // }
+  // else
+  // {
+  //   cout << " Czytanie wartosci OK!!!" << endl;
+  //   // cout << "     " << Sx << "  " << Sy << "  " << Sz << endl;
+  //   this->config.addScale(tmp);
+  // }
+
+  // IStrm.clear();
+  // IStrm.str(sValue_RGB);
+  // IStrm >> tmp[0] >> tmp[1] >> tmp[2];
+  // if (IStrm.fail())
+  // {
+  //   cerr << " Blad!!!" << endl;
+  // }
+  // else
+  // {
+  //   cout << " Czytanie wartosci OK!!!" << endl;
+  //   this->config.addRgb(tmp);
+  // }
 
   // Tu trzeba wstawić odpowiednio własny kod ...
 
-  xercesc::XMLString::release(&sName_Name);
-  xercesc::XMLString::release(&sName_Scale);
-  xercesc::XMLString::release(&sName_RGB);
-  xercesc::XMLString::release(&sValue_Name);
-  xercesc::XMLString::release(&sValue_Scale);
-  xercesc::XMLString::release(&sValue_RGB);
+  // xercesc::XMLString::release(&sName_Name);
+  // xercesc::XMLString::release(&sName_Scale);
+  // xercesc::XMLString::release(&sName_RGB);
+  // xercesc::XMLString::release(&sValue_Name);
+  // xercesc::XMLString::release(&sValue_Scale);
+  // xercesc::XMLString::release(&sValue_RGB);
+  // xercesc::XMLString::release(&sValue);
 }
 
 /*!
