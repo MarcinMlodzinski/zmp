@@ -1,9 +1,9 @@
-#include <xercesc/util/PlatformUtils.hpp>
 #include "xmlinterp.hh"
 #include <cassert>
-#include <sstream>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <xercesc/util/PlatformUtils.hpp>
 
 using namespace std;
 
@@ -20,8 +20,7 @@ using namespace std;
  * Metoda wywoływana jest bezpośrednio przed rozpoczęciem
  * przetwarzana dokumentu XML.
  */
-void XMLInterp4Config::startDocument()
-{
+void XMLInterp4Config::startDocument() {
   cout << "*** Rozpoczecie przetwarzania dokumentu XML." << endl;
 }
 
@@ -29,8 +28,7 @@ void XMLInterp4Config::startDocument()
  * Metoda wywoływana jest bezpośrednio po zakończeniu
  * przetwarzana dokumentu XML.
  */
-void XMLInterp4Config::endDocument()
-{
+void XMLInterp4Config::endDocument() {
   cout << "=== Koniec przetwarzania dokumentu XML." << endl;
 }
 
@@ -38,18 +36,15 @@ void XMLInterp4Config::endDocument()
  * Analizuje atrybuty elementu XML \p "Lib" i odpowiednio je interpretuje.
  * \param[in] rAttrs - atrybuty elementu XML \p "Lib".
  */
-void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes &rAttrs)
-{
-  if (rAttrs.getLength() != 1)
-  {
+void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes &rAttrs) {
+  if (rAttrs.getLength() != 1) {
     cerr << "Zla ilosc atrybutow dla \"Lib\"" << endl;
     exit(1);
   }
 
   char *sParamName = xercesc::XMLString::transcode(rAttrs.getQName(0));
 
-  if (strcmp(sParamName, "Name"))
-  {
+  if (strcmp(sParamName, "Name")) {
     cerr << "Zla nazwa atrybutu dla Lib" << endl;
     exit(1);
   }
@@ -60,7 +55,7 @@ void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes &rAttrs)
   cout << "  Nazwa biblioteki: " << sLibName << endl;
 
   // Tu trzeba wpisać własny kod ...
-  this->config.addLibrary(sLibName);
+  this->config.libraries_vector.push_back(sLibName);
 
   xercesc::XMLString::release(&sParamName);
   xercesc::XMLString::release(&sLibName);
@@ -71,14 +66,14 @@ void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes &rAttrs)
  * to pobiera wartości atrybutów (w postaci napisów) i przekazuje ...
  * \param[in] rAttrs - atrybuty elementu XML \p "Cube".
  */
-void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs)
-{
+void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs) {
   int attributes_number = rAttrs.getLength();
-  // char *sValue_Name, *sValue_Shift, *sValue_Scale, *sValue_RotXYZ_deg, *sValue_Trans_m, *sValue_RGB;
-  std::vector<std::vector<std::string>> sValue(6, std::vector<std::string>(2, ""));
+  // char *sValue_Name, *sValue_Shift, *sValue_Scale, *sValue_RotXYZ_deg,
+  // *sValue_Trans_m, *sValue_RGB;
+  std::vector<std::vector<std::string>> sValue(6,
+                                               std::vector<std::string>(2, ""));
 
-  if (attributes_number < 1)
-  {
+  if (attributes_number < 1) {
     cerr << "Zla ilosc atrybutow dla \"Cube\"" << endl;
     exit(1);
   }
@@ -88,37 +83,25 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs)
    *  Sprawdzamy, czy na pewno jest to Name i Value.
    */
 
-  for (int i = 0; i < attributes_number; i++)
-  {
+  for (int i = 0; i < attributes_number; i++) {
     std::string attribute = xercesc::XMLString::transcode(rAttrs.getQName(i));
-    if (attribute == "Name")
-    {
+    if (attribute == "Name") {
       sValue[0][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
       sValue[0][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
-    }
-    else if (attribute == "Shift")
-    {
+    } else if (attribute == "Shift") {
 
       sValue[1][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
       sValue[1][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
-    }
-    else if (attribute == "Scale")
-    {
+    } else if (attribute == "Scale") {
       sValue[2][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
       sValue[2][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
-    }
-    else if (attribute == "RotXYZ_deg")
-    {
+    } else if (attribute == "RotXYZ_deg") {
       sValue[3][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
       sValue[3][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
-    }
-    else if (attribute == "Trans_m")
-    {
+    } else if (attribute == "Trans_m") {
       sValue[4][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
       sValue[4][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
-    }
-    else if (attribute == "RGB")
-    {
+    } else if (attribute == "RGB") {
       sValue[5][0] = xercesc::XMLString::transcode(rAttrs.getQName(i));
       sValue[5][1] = xercesc::XMLString::transcode(rAttrs.getValue(i));
     }
@@ -142,16 +125,15 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs)
   //  << "     " << sName_RGB << " = \"" << sValue_RGB << "\"" << endl
   //  << endl;
 
-  for (int i = 0; i < 6; i++)
-  {
+  for (int i = 0; i < 6; i++) {
     cout << "     " << sValue[i][0] << " = \"" << sValue[i][1] << "\"" << endl;
   }
 
   //-----------------------------------------------------------------------------
   // Przykład czytania wartości parametrów
   // Ten przykład jest zrobiony "na piechotę" wykorzystując osobne zmienne.
-  // Skala powinna być wektorem. Czytanie powinno być rezlizowane z wykorzysaniem
-  // wektorów, np.
+  // Skala powinna być wektorem. Czytanie powinno być rezlizowane z
+  // wykorzysaniem wektorów, np.
   //
   //
   // istringstream IStrm;
@@ -163,49 +145,51 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs)
   // this->config.addName(sValue_Name);
   istringstream IStrm;
   Vector3D tmp;
+  MobileObjConfig object_config;
 
   // IStrm.str(sValue_Scale);
   // double Sx, Sy, Sz;
 
-  this->config.addName(sValue[0][1]);
+  // this->config.addName(sValue[0][1]);
+  object_config.name = sValue[0][1];
 
-  for (int i = 1; i < 6; i++)
-  {
+  for (int i = 1; i < 6; i++) {
     IStrm.str(sValue[i][1]);
     IStrm >> tmp[0] >> tmp[1] >> tmp[2];
-    switch (i)
-    {
+    switch (i) {
     case 1:
-
-      this->config.addShift(tmp);
+      object_config.shift = tmp;
+      // this->config.addShift(tmp);
       break;
     case 2:
-
-      this->config.addScale(tmp);
+      object_config.scale = tmp;
+      // this->config.addScale(tmp);
       break;
     case 3:
-
-      this->config.addRot(tmp);
+      object_config.rot = tmp;
+      // this->config.addRot(tmp);
       break;
     case 4:
-
-      this->config.addTrans(tmp);
+      object_config.trans = tmp;
+      // this->config.addTrans(tmp);
       break;
     case 5:
-
-      this->config.addRgb(tmp);
+      object_config.rgb = tmp;
+      // this->config.addRgb(tmp);
       break;
 
     default:
       break;
     }
     cout << " Czytanie wartosci OK!!!" << endl;
-    if (i > 0)
-    {
-      cout << sValue[i][0] << "     " << tmp[0] << "  " << tmp[1] << "  " << tmp[2] << endl;
+    if (i > 0) {
+      cout << sValue[i][0] << "     " << tmp[0] << "  " << tmp[1] << "  "
+           << tmp[2] << endl;
     }
     IStrm.clear();
   }
+
+  this->config.objects_vector.push_back(object_config);
 
   // IStrm >> Sx >> Sy >> Sz;
   // IStrm >> tmp[0] >> tmp[1] >> tmp[2];
@@ -254,16 +238,13 @@ void XMLInterp4Config::ProcessCubeAttrs(const xercesc::Attributes &rAttrs)
  * \param[in] rAttrs - atrybuty napotkanego elementu XML.
  */
 void XMLInterp4Config::WhenStartElement(const std::string &rElemName,
-                                        const xercesc::Attributes &rAttrs)
-{
-  if (rElemName == "Lib")
-  {
+                                        const xercesc::Attributes &rAttrs) {
+  if (rElemName == "Lib") {
     ProcessLibAttrs(rAttrs);
     return;
   }
 
-  if (rElemName == "Cube")
-  {
+  if (rElemName == "Cube") {
     ProcessCubeAttrs(rAttrs);
     return;
   }
@@ -277,15 +258,22 @@ void XMLInterp4Config::WhenStartElement(const std::string &rElemName,
    \endverbatim
  *  to poprzez parametr \e xscElemName jest dostęp do nazwy elementu
  *  tzn. \p Action,
- *  \param[in] pURI - (Uniform Resource Identifier) jeżeli nie jest on wyspecyfikowany
- *                    poprzez użycie atrybutów \p xmlns (o ile jego użycie jest przewidziane w gramatyce,
- *                    w tym przykładzie nie jest to przewidziane), to będzie to napis pusty.
+ *  \param[in] pURI - (Uniform Resource Identifier) jeżeli nie jest on
+ wyspecyfikowany
+ *                    poprzez użycie atrybutów \p xmlns (o ile jego użycie jest
+ przewidziane w gramatyce,
+ *                    w tym przykładzie nie jest to przewidziane), to będzie to
+ napis pusty.
  *  \param[in] pLocalName -  umożliwia dostęp do nazwy elementu XML.
  *                 W podanym przykładzie nazwą elementu XML jest "Action".
- *  \param[in] pQName - pełna kwalifikowana nazwa. To ma znaczenie, gdy użyta jest przestrzeń nazwa.
- *                      Wówczas poprzez ten parametr można otrzymać nazwę elementu wraz z prefiksem
- *                      przestrzeni nazwa. Jeśli przestrzeń nazw nie jest użyta (taka jak w tym
- *                      przykładzie), to \p pQName i \p pLocalName dostaczają identyczne napisy.
+ *  \param[in] pQName - pełna kwalifikowana nazwa. To ma znaczenie, gdy użyta
+ jest przestrzeń nazwa.
+ *                      Wówczas poprzez ten parametr można otrzymać nazwę
+ elementu wraz z prefiksem
+ *                      przestrzeni nazwa. Jeśli przestrzeń nazw nie jest użyta
+ (taka jak w tym
+ *                      przykładzie), to \p pQName i \p pLocalName dostaczają
+ identyczne napisy.
  *  \param[in] rAttrs -  lista atrybutów danego symbolu XML.
  *                 W przykładzie pokazanym powyżej listę atrybutów
  *                 będą stanowiły napisy:
@@ -296,8 +284,7 @@ void XMLInterp4Config::WhenStartElement(const std::string &rElemName,
 void XMLInterp4Config::startElement(const XMLCh *const pURI,
                                     const XMLCh *const pLocalName,
                                     const XMLCh *const pQName,
-                                    const xercesc::Attributes &rAttrs)
-{
+                                    const xercesc::Attributes &rAttrs) {
   char *sElemName = xercesc::XMLString::transcode(pLocalName);
   cout << "+++ Poczatek elementu: " << sElemName << endl;
 
@@ -321,21 +308,27 @@ void XMLInterp4Config::startElement(const XMLCh *const pURI,
    \endverbatim
  * to wówczas wywołana metoda wywołana zostanie w momencie
  * napotkania sekwencji "/>"
- *  \param[in] pURI - (Uniform Resource Identifier) jeżeli nie jest on wyspecyfikowany
- *                    poprzez użycie atrybutów \p xmlns (o ile jego użycie jest przewidziane w gramatyce,
- *                    w tym przykładzie nie jest to przewidziane), to będzie to napis pusty.
+ *  \param[in] pURI - (Uniform Resource Identifier) jeżeli nie jest on
+ wyspecyfikowany
+ *                    poprzez użycie atrybutów \p xmlns (o ile jego użycie jest
+ przewidziane w gramatyce,
+ *                    w tym przykładzie nie jest to przewidziane), to będzie to
+ napis pusty.
  *  \param[in] pLocalName -  umożliwia dostęp do nazwy elementu XML.
  *                 W podanym przykładzie nazwą elementu XML jest "Lib".
- *  \param[in] pQName - pełna kwalifikowana nazwa. To ma znaczenie, gdy użyta jest przestrzeń nazwa.
- *                      Wówczas poprzez ten parametr można otrzymać nazwę elementu wraz z prefiksem
- *                      przestrzeni nazwa. Jeśli przestrzeń nazw nie jest użyta (taka jak w tym
- *                      przykładzie), to \p pQName i \p pLocalName dostaczają identyczne napisy.
+ *  \param[in] pQName - pełna kwalifikowana nazwa. To ma znaczenie, gdy użyta
+ jest przestrzeń nazwa.
+ *                      Wówczas poprzez ten parametr można otrzymać nazwę
+ elementu wraz z prefiksem
+ *                      przestrzeni nazwa. Jeśli przestrzeń nazw nie jest użyta
+ (taka jak w tym
+ *                      przykładzie), to \p pQName i \p pLocalName dostaczają
+ identyczne napisy.
  *
  */
 void XMLInterp4Config::endElement(const XMLCh *const pURI,
                                   const XMLCh *const pLocalName,
-                                  const XMLCh *const pQName)
-{
+                                  const XMLCh *const pQName) {
   char *sURI = xercesc::XMLString::transcode(pURI);
   char *sElemName = xercesc::XMLString::transcode(pLocalName);
   char *sQName = xercesc::XMLString::transcode(pQName);
@@ -356,8 +349,8 @@ void XMLInterp4Config::endElement(const XMLCh *const pURI,
  * \param[in] rException - zawiera informacje dotyczące błędu w dokumencie,
  *                         linii, kolumny itp.
  */
-void XMLInterp4Config::fatalError(const xercesc::SAXParseException &rException)
-{
+void XMLInterp4Config::fatalError(
+    const xercesc::SAXParseException &rException) {
   char *sMessage = xercesc::XMLString::transcode(rException.getMessage());
   char *sSystemId = xercesc::XMLString::transcode(rException.getSystemId());
 
@@ -365,8 +358,7 @@ void XMLInterp4Config::fatalError(const xercesc::SAXParseException &rException)
        << "    Plik:  " << sSystemId << endl
        << "   Linia: " << rException.getLineNumber() << endl
        << " Kolumna: " << rException.getColumnNumber() << endl
-       << " Informacja: " << sMessage
-       << endl;
+       << " Informacja: " << sMessage << endl;
 
   xercesc::XMLString::release(&sMessage);
   xercesc::XMLString::release(&sSystemId);
@@ -380,8 +372,7 @@ void XMLInterp4Config::fatalError(const xercesc::SAXParseException &rException)
  *                     te to opis błędu oraz numer linii, w której
  *                     wystąpił błąd.
  */
-void XMLInterp4Config::error(const xercesc::SAXParseException &rException)
-{
+void XMLInterp4Config::error(const xercesc::SAXParseException &rException) {
   cerr << "Blad ..." << endl;
 
   /*
@@ -396,8 +387,7 @@ void XMLInterp4Config::error(const xercesc::SAXParseException &rException)
  * \param[in] rException - zawiera informacje dotyczące błędu w dokumencie,
  *                         linii, kolumny itp.
  */
-void XMLInterp4Config::warning(const xercesc::SAXParseException &rException)
-{
+void XMLInterp4Config::warning(const xercesc::SAXParseException &rException) {
   cerr << "Ostrzezenie ..." << endl;
 
   /*
