@@ -53,28 +53,36 @@ const char *Interp4Rotate::GetCmdName() const
 bool Interp4Rotate::ExecCmd(Scene *scene) const
 {
   MobileObj *object = scene->FindMobileObj(_Object_name.c_str());
-  // Vector3D position_init = object->GetPositoin_m();
-  // double roll_init = object->GetAng_Roll_deg();
-  // double pitch_init = object->GetAng_Pitch_deg();
   double yaw_init = object->GetAng_Yaw_deg();
 
-  double time = _Angle_deg / _Angular_speed_degs;
+  double time = _Angle_deg / _Angular_speed_degs; // sekundy
   double steps = (int)(time * FPS);
-  double step_distance = _Angle_deg / steps;
-  double step_time = 1 / FPS;
+  double step_distance = _Angle_deg / steps; // stopnie
+  double step_time = 0.0333333;              // sekundy 30fps
 
-  // double startYaw = object->GetAng_Yaw_deg();
+  // std::cout << "time:" << time << std::endl;
+  // std::cout << "steps:" << steps << std::endl;
+  // std::cout << "step_distance:" << step_distance << std::endl;
+  // std::cout << "step_time:" << step_time << std::endl;
+
   double yaw_move = 0;
 
   for (int i = 0; i < steps; ++i)
   {
-    scene->LockAccess(); // Lock access to the scene to modify something :)
+    scene->LockAccess();
     yaw_move += step_distance;
     object->SetAng_Yaw_deg(yaw_init + yaw_move);
     scene->MarkChange();
     scene->UnlockAccess();
     usleep(step_time * 1000000);
   }
+  // math error correction
+  step_distance = _Angle_deg - (steps * step_distance);
+  scene->LockAccess();
+  yaw_move += step_distance;
+  object->SetAng_Yaw_deg(yaw_init + yaw_move);
+  scene->MarkChange();
+  scene->UnlockAccess();
   return true;
 }
 

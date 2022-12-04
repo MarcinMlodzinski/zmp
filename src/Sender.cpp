@@ -43,7 +43,7 @@ void Sender::Watching_and_Sending()
             usleep(10000);
             continue;
         }
-        std::cout << "send\n";
+        // std::cout << "send\n";
         _pScn->LockAccess();
 
         //------- Przeglądanie tej kolekcji to uproszczony przykład

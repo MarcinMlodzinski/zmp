@@ -36,19 +36,30 @@ Interp4Command *Set4LibInterfaces::execute(std::string key)
 {
     // std::string key;
     std::shared_ptr<LibInterface> handle;
-    Interp4Command *command;
+    Interp4Command *command = nullptr;
 
     // while (stream >> key)
     // {
-    std::map<std::string, std::shared_ptr<LibInterface>>::iterator iterator = libraries.find(key);
-    if (iterator == libraries.end())
+    if (key == "BEGIN_PARALLEL_ACTIONS")
     {
-        std::cout << "Nie znaleziono wtyczki dla polecenia: " << key << std::endl;
-        return NULL;
+        parallel = true;
     }
+    else if (key == "END_PARALLEL_ACTIONS")
+    {
+        parallel = false;
+    }
+    else
+    {
+        std::map<std::string, std::shared_ptr<LibInterface>>::iterator iterator = libraries.find(key);
+        if (iterator == libraries.end())
+        {
+            std::cout << "Nie znaleziono wtyczki dla polecenia: " << key << std::endl;
+            return nullptr;
+        }
 
-    handle = iterator->second;
-    command = handle->CreateCmd();
+        handle = iterator->second;
+        command = handle->CreateCmd();
+    }
     // command->ReadParams(stream);
     // std::cout << "Polecenie:" << std::endl;
     // command->PrintCmd();

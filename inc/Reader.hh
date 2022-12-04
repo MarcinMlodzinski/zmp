@@ -23,5 +23,5 @@ public:
     Reader(){};
     bool init(std::string cmdFile);
     bool execPreprocesor(std::istringstream &IStrm4Cmds);
-    bool ReadFile(const char* sFileName, Configuration &rConfig);
+    bool ReadFile(const char *sFileName, Configuration &rConfig);
 };

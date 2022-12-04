@@ -17,6 +17,7 @@ int main()
   Set4LibInterfaces handler;
   Interp4Command *command;
   std::istringstream stream;
+  std::vector<std::thread> threads;
   reader.init("opis_dzialan.cmd");
 
   if (!reader.ReadFile("config/config.xml", Config))
@@ -36,8 +37,26 @@ int main()
   while (stream >> key)
   {
     command = handler.execute(key);
-    command->ReadParams(stream);
-    command->ExecCmd(&scene);
+    // if (command != nullptr)
+    // {
+    //   command->ReadParams(stream);
+    // }
+
+    if (handler.isParallel() && command != nullptr)
+    {
+      command->ReadParams(stream);
+      threads.push_back(std::thread(&Interp4Command::ExecCmd, command, &scene));
+      // command->ExecCmd(&scene);
+    }
+    else if (!handler.isParallel())
+    {
+      for (int i = 0; i < threads.size(); ++i)
+      {
+        if (threads[i].joinable())
+          threads[i].join();
+      }
+      threads.clear();
+    }
   }
 
   // const char *sConfigCmds =
@@ -59,6 +78,12 @@ int main()
 
   sender.Send("Close\n");
   sender.CancelCountinueLooping();
+  for (int i = 0; i < threads.size(); ++i)
+  {
+    // std::cout << "ccc\n";
+    if (threads[i].joinable())
+      threads[i].join();
+  }
   Thread4Sending.join();
 
   return 0;

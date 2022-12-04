@@ -58,13 +58,18 @@ bool Interp4Move::ExecCmd(Scene *scene) const
   double pitch_init = object->GetAng_Pitch_deg();
   double yaw_init = object->GetAng_Yaw_deg();
 
-  double time = _Distance_m / (_Speed_mmS / 1000);
+  double time = _Distance_m / _Speed_mmS; // sekundy
   double steps = (int)(time * FPS);
 
   double x_move = 0, y_move = 0, z_move = 0;
   Vector3D move;
-  double step_distance = _Distance_m / steps;
-  double step_time = 1 / FPS;
+  double step_distance = _Distance_m / steps; // metry
+  double step_time = 0.0333333;               // sekundy 30fps
+
+  // std::cout << "time:" << time << std::endl;
+  // std::cout << "steps:" << steps << std::endl;
+  // std::cout << "step_distance:" << step_distance << std::endl;
+  // std::cout << "step_time:" << step_time << std::endl;
 
   for (int i = 0; i < steps; ++i)
   {
@@ -74,7 +79,7 @@ bool Interp4Move::ExecCmd(Scene *scene) const
     move[0] = x_move + position_init[0];
     move[1] = y_move + position_init[1];
     move[2] = z_move + position_init[2];
-    scene->LockAccess(); // Lock access
+    scene->LockAccess();
     object->SetPosition_m(move);
     scene->MarkChange();
     scene->UnlockAccess();
@@ -90,7 +95,7 @@ bool Interp4Move::ExecCmd(Scene *scene) const
     move[0] = x_move + position_init[0];
     move[1] = y_move + position_init[1];
     move[2] = z_move + position_init[2];
-    scene->LockAccess(); // Lock access
+    scene->LockAccess();
     object->SetPosition_m(move);
     scene->MarkChange();
     scene->UnlockAccess();
