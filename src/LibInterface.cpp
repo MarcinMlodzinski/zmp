@@ -7,6 +7,7 @@ LibInterface::~LibInterface()
 
 bool LibInterface::init(std::string libraryName)
 {
+
     _LibHandler = dlopen(libraryName.c_str(), RTLD_LAZY);
     void *function;
     const char *(*getCmdName)(void);

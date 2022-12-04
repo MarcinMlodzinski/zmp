@@ -50,11 +50,21 @@ const char *Interp4Set::GetCmdName() const
 /*!
  *
  */
-bool Interp4Set::ExecCmd(MobileObj *pMobObj, AccessControl *pAccCtrl) const
+bool Interp4Set::ExecCmd(Scene *scene) const
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
+  MobileObj *object = scene->FindMobileObj(_Object_name.c_str());
+  Vector3D position_init = object->GetPositoin_m();
+  Vector3D new_position;
+  new_position[0] = _X;
+  new_position[1] = _Y;
+  new_position[2] = position_init[2];
+  scene->LockAccess();
+
+  object->SetPosition_m(new_position);
+  object->SetAng_Yaw_deg(_Angle_deg);
+
+  scene->MarkChange();
+  scene->UnlockAccess();
   return true;
 }
 

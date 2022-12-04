@@ -154,6 +154,11 @@ public:
         void setScale(Vector3D new_scale) { scale = new_scale; }
         void setRgb(Vector3D new_rgb) { rgb = new_rgb; }
         void setTranslation(Vector3D new_trans) { translation = new_trans; }
+        std::string getUpdateInstruction() const;
+        std::string getAddInstruction() const;
+        Vector3D getScale() { return scale; }
+        Vector3D getRgb() { return rgb; }
+        Vector3D getTranslation() { return translation; }
 };
 
 #endif

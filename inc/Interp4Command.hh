@@ -4,6 +4,10 @@
 #include <iostream>
 #include "MobileObj.hh"
 #include "AccessControl.hh"
+#include "Scene.hh"
+#include <unistd.h>
+
+#define FPS 30
 
 /*!
  * \file
@@ -41,7 +45,7 @@ public:
   /*!
    * \brief Wykonuje polecenie oraz wizualizuje jego realizację.
    */
-  virtual bool ExecCmd(MobileObj *pMobObj, AccessControl *pAccCtrl) const = 0;
+  virtual bool ExecCmd(Scene *scene) const = 0;
   /*!
    * \brief Czyta wartości parametrów danego polecenia.
    */

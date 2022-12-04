@@ -16,5 +16,5 @@ private:
 
 public:
     bool init(std::vector<std::string> libraries_vector);
-    bool execute(std::istringstream &stream);
+    Interp4Command *execute(std::string key);
 };

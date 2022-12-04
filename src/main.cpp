@@ -10,16 +10,17 @@
 #include <iostream>
 #include <thread>
 
-
-int main() {
+int main()
+{
   Configuration Config;
   Reader reader;
   Set4LibInterfaces handler;
+  Interp4Command *command;
   std::istringstream stream;
   reader.init("opis_dzialan.cmd");
-  reader.execPreprocesor(stream);
 
-  if (!reader.ReadFile("config/config.xml", Config)) {
+  if (!reader.ReadFile("config/config.xml", Config))
+  {
     return 1;
   }
 
@@ -28,27 +29,33 @@ int main() {
   if (!sender.OpenConnection())
     return 1;
 
-  std::thread Thread4Sending(&Sender::Watching_and_Sending, &sender);
-
   handler.init(Config.libraries_vector);
-  handler.execute(stream);
+  std::thread Thread4Sending(&Sender::Watching_and_Sending, &sender);
+  std::string key;
+  reader.execPreprocesor(stream);
+  while (stream >> key)
+  {
+    command = handler.execute(key);
+    command->ReadParams(stream);
+    command->ExecCmd(&scene);
+  }
 
-  const char *sConfigCmds =
-      "Clear\n"
-      "AddObj Name=Podstawa1 RGB=(20,200,200) Scale=(4,2,1) Shift=(0.5,0,0) "
-      "RotXYZ_deg=(0,-45,20) Trans_m=(-1,3,0)\n"
-      "AddObj Name=Podstawa1.Ramie1 RGB=(200,0,0) Scale=(3,3,1) "
-      "Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(4,0,0)\n"
-      "AddObj Name=Podstawa1.Ramie1.Ramie2 RGB=(100,200,0) Scale=(2,2,1) "
-      "Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(3,0,0)\n"
-      "AddObj Name=Podstawa2 RGB=(20,200,200) Scale=(4,2,1) Shift=(0.5,0,0) "
-      "RotXYZ_deg=(0,-45,0) Trans_m=(-1,-3,0)\n"
-      "AddObj Name=Podstawa2.Ramie1 RGB=(200,0,0) Scale=(3,3,1) "
-      "Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(4,0,0)\n"
-      "AddObj Name=Podstawa2.Ramie1.Ramie2 RGB=(100,200,0) Scale=(2,2,1) "
-      "Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(3,0,0)\n";
+  // const char *sConfigCmds =
+  //     "Clear\n"
+  //     "AddObj Name=Podstawa1 RGB=(20,200,200) Scale=(4,2,1) Shift=(0.5,0,0) "
+  //     "RotXYZ_deg=(0,-45,20) Trans_m=(-1,3,0)\n"
+  //     "AddObj Name=Podstawa1.Ramie1 RGB=(200,0,0) Scale=(3,3,1) "
+  //     "Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(4,0,0)\n"
+  //     "AddObj Name=Podstawa1.Ramie1.Ramie2 RGB=(100,200,0) Scale=(2,2,1) "
+  //     "Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(3,0,0)\n"
+  //     "AddObj Name=Podstawa2 RGB=(20,200,200) Scale=(4,2,1) Shift=(0.5,0,0) "
+  //     "RotXYZ_deg=(0,-45,0) Trans_m=(-1,-3,0)\n"
+  //     "AddObj Name=Podstawa2.Ramie1 RGB=(200,0,0) Scale=(3,3,1) "
+  //     "Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(4,0,0)\n"
+  //     "AddObj Name=Podstawa2.Ramie1.Ramie2 RGB=(100,200,0) Scale=(2,2,1) "
+  //     "Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(3,0,0)\n";
 
-  sender.Send(sConfigCmds);
+  // sender.Send(sConfigCmds);
 
   sender.Send("Close\n");
   sender.CancelCountinueLooping();

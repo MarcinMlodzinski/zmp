@@ -6,6 +6,9 @@
 #endif
 
 #include "Interp4Command.hh"
+#include "Scene.hh"
+#include "MobileObj.hh"
+#include "AccessControl.hh"
 
 /*!
  * \file
@@ -48,7 +51,7 @@ public:
   /*!
    * \brief Wykonuje polecenie oraz wizualizuje jego realizację
    */
-  virtual bool ExecCmd(MobileObj *pMobObj, AccessControl *pAccCtrl) const;
+  virtual bool ExecCmd(Scene *scene) const;
   /*!
    * \brief Czyta wartości parametrów danego polecenia
    */

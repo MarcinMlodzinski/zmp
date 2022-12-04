@@ -50,11 +50,52 @@ const char *Interp4Move::GetCmdName() const
 /*!
  *
  */
-bool Interp4Move::ExecCmd(MobileObj *pMobObj, AccessControl *pAccCtrl) const
+bool Interp4Move::ExecCmd(Scene *scene) const
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
+  MobileObj *object = scene->FindMobileObj(_Object_name.c_str());
+  Vector3D position_init = object->GetPositoin_m();
+  double roll_init = object->GetAng_Roll_deg();
+  double pitch_init = object->GetAng_Pitch_deg();
+  double yaw_init = object->GetAng_Yaw_deg();
+
+  double time = _Distance_m / (_Speed_mmS / 1000);
+  double steps = (int)(time * FPS);
+
+  double x_move = 0, y_move = 0, z_move = 0;
+  Vector3D move;
+  double step_distance = _Distance_m / steps;
+  double step_time = 1 / FPS;
+
+  for (int i = 0; i < steps; ++i)
+  {
+    x_move += step_distance * cos(pitch_init * M_PI / 180) * cos(yaw_init * M_PI / 180);
+    y_move += step_distance * (cos(roll_init * M_PI / 180) * sin(yaw_init * M_PI / 180) + cos(yaw_init * M_PI / 180) * sin(pitch_init * M_PI / 180) * sin(roll_init * M_PI / 180));
+    z_move += step_distance * (sin(roll_init * M_PI / 180) * sin(yaw_init * M_PI / 180) - cos(roll_init * M_PI / 180) * cos(yaw_init * M_PI / 180) * sin(pitch_init * M_PI / 180));
+    move[0] = x_move + position_init[0];
+    move[1] = y_move + position_init[1];
+    move[2] = z_move + position_init[2];
+    scene->LockAccess(); // Lock access
+    object->SetPosition_m(move);
+    scene->MarkChange();
+    scene->UnlockAccess();
+    usleep(step_time * 1000000);
+  }
+  // math errors correction
+  step_distance = _Distance_m - (steps * step_distance);
+  if (step_distance)
+  {
+    x_move += step_distance * cos(pitch_init * M_PI / 180) * cos(yaw_init * M_PI / 180);
+    y_move += step_distance * (cos(roll_init * M_PI / 180) * sin(yaw_init * M_PI / 180) + cos(yaw_init * M_PI / 180) * sin(pitch_init * M_PI / 180) * sin(roll_init * M_PI / 180));
+    z_move += step_distance * (sin(roll_init * M_PI / 180) * sin(yaw_init * M_PI / 180) - cos(roll_init * M_PI / 180) * cos(yaw_init * M_PI / 180) * sin(pitch_init * M_PI / 180));
+    move[0] = x_move + position_init[0];
+    move[1] = y_move + position_init[1];
+    move[2] = z_move + position_init[2];
+    scene->LockAccess(); // Lock access
+    object->SetPosition_m(move);
+    scene->MarkChange();
+    scene->UnlockAccess();
+  }
+
   return true;
 }
 

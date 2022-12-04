@@ -50,11 +50,31 @@ const char *Interp4Rotate::GetCmdName() const
 /*!
  *
  */
-bool Interp4Rotate::ExecCmd(MobileObj *pMobObj, AccessControl *pAccCtrl) const
+bool Interp4Rotate::ExecCmd(Scene *scene) const
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
+  MobileObj *object = scene->FindMobileObj(_Object_name.c_str());
+  // Vector3D position_init = object->GetPositoin_m();
+  // double roll_init = object->GetAng_Roll_deg();
+  // double pitch_init = object->GetAng_Pitch_deg();
+  double yaw_init = object->GetAng_Yaw_deg();
+
+  double time = _Angle_deg / _Angular_speed_degs;
+  double steps = (int)(time * FPS);
+  double step_distance = _Angle_deg / steps;
+  double step_time = 1 / FPS;
+
+  // double startYaw = object->GetAng_Yaw_deg();
+  double yaw_move = 0;
+
+  for (int i = 0; i < steps; ++i)
+  {
+    scene->LockAccess(); // Lock access to the scene to modify something :)
+    yaw_move += step_distance;
+    object->SetAng_Yaw_deg(yaw_init + yaw_move);
+    scene->MarkChange();
+    scene->UnlockAccess();
+    usleep(step_time * 1000000);
+  }
   return true;
 }
 

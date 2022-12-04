@@ -88,4 +88,6 @@ public:
      *                     wysyłane są polecenia.
      */
     void Watching_and_Sending();
+    std::string getUpdateInstruction(MobileObj *object) const;
+    std::string getAddInstruction(MobileObj *object) const;
 };
