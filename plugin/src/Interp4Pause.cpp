@@ -52,7 +52,7 @@ const char *Interp4Pause::GetCmdName() const
  */
 bool Interp4Pause::ExecCmd(Scene *scene) const
 {
-  scene->LockAccess(); // Lock access to the scene to modify something :)
+  scene->LockAccess();
   usleep(_Pause_time_ms * 1000);
   scene->UnlockAccess();
   return true;
